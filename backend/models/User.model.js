@@ -10,13 +10,16 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      minLength: 6,
     },
     name: {
       type: String,
       required: true,
     },
-
-    posts: {},
+    profilePictureUrl: {
+      type: String,
+      default: "",
+    },
   },
   { timeseries: true }
 );
