@@ -1,27 +1,22 @@
-import { hash } from "bcryptjs";
+import bcrypt from "bcryptjs";
 import { User } from "../models/User.model.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
+import { APIError, asyncHandler } from "../middleware/errorHandler.js";
 
-export const singup = async (req, res) => {
+export const singup = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
-    return res.status(400).json({
-      success: false,
-      message: "All fields required",
-    });
+    throw new APIError("All fields required", 400);
   }
 
   const alreadyExists = await User.findOne({ email });
 
   if (alreadyExists) {
-    return res.status(400).send({
-      success: false,
-      meassage: "User with this email is aleready exists",
-    });
+    throw new APIError("Invalid email or password", 400);
   }
 
-  const hashedPassword = await hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = new User({
     name,
@@ -42,40 +37,35 @@ export const singup = async (req, res) => {
     message: "User Created",
     user: userInfo,
   });
-};
+});
 
-export const login = async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res.send(200).json({
-      success: false,
-      message: "Invalid email or password",
-    });
+    throw new APIError("User with this email does not exist", 400);
   }
 
   const isValidPassword = await bcrypt.compare(password, user.password);
 
   if (!isValidPassword) {
-    return res.send(200).json({
-      success: false,
-      message: "Invalid email or password",
-    });
+    throw new APIError("Invalid email or password", 400);
   }
 
   generateTokenAndSetCookie(res, user._id);
 
-  return res.send(200).json({
+  return res.status(200).json({
     success: true,
     message: "User logged in",
   });
-};
-export const logout = async (req, res) => {
+});
+
+export const logout = asyncHandler(async (req, res) => {
   res.clearCookie("token");
   return res.status(200).json({
     success: true,
     meassage: "Logged out",
   });
-};
+});

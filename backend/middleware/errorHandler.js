@@ -1,8 +1,9 @@
-class APIError extends Error {
+export class APIError extends Error {
   constructor(message, statusCode) {
     super(message);
     this.statusCode = statusCode;
-    this.name = "API Error";
+    this.isOperational = true;
+    Error.captureStackTrace(this, this.constructor);
   }
 }
 
@@ -12,22 +13,13 @@ export const asyncHandler = (fn) => (req, res, next) => {
 
 export const globalErrorHandler = (err, req, res, next) => {
   console.error(err.stack);
+  // console.log("Hello");
 
-  if (err instanceof APIError) {
-    switch (err.name) {
-      case "Validation Error":
-        return res.status(400).json({
-          success: false,
-          message: "Validation Error",
-        });
-        break;
+  const statusCode = err.statusCode || 500;
+  const message = err.isOperational ? err.message : "Internal server error";
 
-      default:
-        return res.status(400).json({
-          success: false,
-          message: "Internal Server Error",
-        });
-        break;
-    }
-  }
+  return res.status(statusCode).json({
+    success: false,
+    message,
+  });
 };
