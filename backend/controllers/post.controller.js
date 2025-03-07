@@ -1,3 +1,4 @@
+import { asyncHandler } from "../middleware/errorHandler";
 import { Post } from "../models/Post.model";
 
 const createPost = async (req, res) => {
@@ -18,3 +19,11 @@ const createPost = async (req, res) => {
 
   await post.save();
 };
+
+const deletePost = asyncHandler(async (req, res) => {});
+
+const leaveComment = asyncHandler(async (req, res) => {});
+
+const deleteComment = asyncHandler(async (req, res) => {});
+
+const likePost = asyncHandler(async (req, res) => {});

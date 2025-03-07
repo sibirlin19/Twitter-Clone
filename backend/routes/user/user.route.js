@@ -1,7 +1,11 @@
 import express from "express";
 import { verefiyToken } from "../../middleware/authMiddleware.js";
-import { updateUser } from "../../controllers/user.controller.js";
+import {
+  updateUser,
+  getUserProfile,
+} from "../../controllers/user.controller.js";
 
-export const authRouter = express.Router();
+export const userRouter = express.Router();
 
-authRouter.post("/update-profile/:id", verefiyToken, updateUser);
+userRouter.get("/profile/:username", verefiyToken, getUserProfile);
+userRouter.post("/update-profile/:id", verefiyToken, updateUser);

@@ -1,31 +1,19 @@
 import jwt from "jsonwebtoken";
+import { APIError, asyncHandler } from "./errorHandler";
 
-export const verefiyToken = async (req, res, next) => {
+export const verefiyToken = asyncHandler(async (req, res, next) => {
   const { token } = req.cookies.token;
-
   if (!token) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized - no token provided",
-    });
+    throw new APIError("Unauthorized - no token provided", 401);
   }
-
   try {
     const decoded = jwt.decode(token, process.env.JWT_SECRET);
-
     if (!decoded) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized - invalid token",
-      });
+      throw new APIError("Unauthorized - invalid token", 401);
     }
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    throw new APIError("Server error", 500);
   }
-};
+});
