@@ -1,9 +1,7 @@
-import AWS from "aws-sdk";
+import express from "express";
+import { uploadFile } from "../../controllers/upload.controller";
+import { verefiyToken } from "../../middleware/authMiddleware";
 
-const s3 = new AWS.S3({
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
-  },
-  region: process.env.AWS_REGION,
-});
+export const uploadRouter = express.Router();
+
+uploadRouter.post("/upload", verefiyToken, uploadFile).get();
