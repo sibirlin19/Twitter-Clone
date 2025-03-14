@@ -53,5 +53,7 @@ export const followOnUser = asyncHandler(async (req, res) => {
         message: "User followed successfully",
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    throw new APIError("Internal server error", 500);
+  }
 });

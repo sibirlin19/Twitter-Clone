@@ -1,0 +1,35 @@
+body {
+  background-color: black;
+  color: white;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  ul,
+  ol {
+    list-style: none;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: normal;
+  }
+
+  button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    outline: none;
+  }
+}

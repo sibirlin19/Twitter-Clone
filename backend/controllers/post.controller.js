@@ -20,7 +20,17 @@ const createPost = async (req, res) => {
   await post.save();
 };
 
-const deletePost = asyncHandler(async (req, res) => {});
+const deletePost = asyncHandler(async (req, res) => {
+  try {
+    const { postId } = req.body;
+    const postToDelete = await Post.findByIdAndDelete(postId);
+
+    res.status(200).json({
+      success: false,
+      message: "Post deleted ",
+    });
+  } catch (error) {}
+});
 
 const leaveComment = asyncHandler(async (req, res) => {});
 
